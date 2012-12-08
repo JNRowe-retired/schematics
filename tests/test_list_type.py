@@ -4,6 +4,11 @@ import copy
 import unittest
 import json
 
+try:
+    unittest.expectedFailure
+except AttributeError:
+    import unittest2 as unittest
+
 from schematics.models import Model
 from schematics.types import  IntType, StringType
 from schematics.types.compound import SortedListType, ModelType, ListType
