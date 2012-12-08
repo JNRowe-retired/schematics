@@ -249,8 +249,7 @@ def diff_id_field(id_field, field_list, *arg):
     return wrap
 
 
-class Model(BaseModel):
+class Model(ModelMetaclass('Model', (BaseModel, ), {})):
     """Model YEAH
     """
-    __metaclass__ = ModelMetaclass
     __optionsclass__ = ModelOptions

@@ -24,12 +24,10 @@ class BaseTypeMetaClass(type):
 ### Base Type
 ###
 
-class BaseType(object):
+class BaseType(BaseTypeMetaClass('BaseType', (object, ), {})):
     """A base class for Types in a Structures model. Instances of this
     class may be added to subclasses of `Model` to define a model schema.
     """
-
-    __metaclass__ = BaseTypeMetaClass
 
     def __init__(self, required=False, default=None, field_name=None,
                  print_name=None, choices=None, validation=None, description=None,
