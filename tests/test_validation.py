@@ -1,6 +1,9 @@
 #!/usr/bin/env python
 
 import unittest
+
+from expecter import expect
+
 from schematics.models import Model
 from schematics.validation import validate_instance
 from schematics.types import StringType
@@ -38,19 +41,19 @@ class TestChoices(unittest.TestCase):
 
     def test_choices_validates(self):
         result = validate_instance(self.doc_simple_valid)
-        self.assertEqual(result.tag, 'OK')
+        expect(result.tag) == 'OK'
 
     def test_validation_fails(self):
         result = validate_instance(self.doc_simple_invalid)
-        self.assertNotEqual(result.tag, 'OK')
+        expect(result.tag) != 'OK'
 
     def test_choices_validates_with_embedded(self):
         result = validate_instance(self.doc_embedded_valid)
-        self.assertEqual(result.tag, 'OK')
+        expect(result.tag) == 'OK'
 
     def test_validation_failes_with_embedded(self):
         result = validate_instance(self.doc_embedded_invalid)
-        self.assertNotEqual(result.tag, 'OK')
+        expect(result.tag) != 'OK'
 
 
 if __name__ == '__main__':

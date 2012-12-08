@@ -5,6 +5,8 @@ import copy
 import unittest
 import json
 
+from expecter import expect
+
 from schematics.models import (ModelOptions, _parse_options_config,
                                _gen_options, _extract_fields,
                                Model)
@@ -30,11 +32,11 @@ class TestOptions(unittest.TestCase):
         }
 
         mo = self._class(**args)
-        self.assertNotEqual(mo, None)
+        expect(mo) != None
 
         ### Test that a value for roles was generated
-        self.assertNotEqual(mo.roles, None)
-        self.assertEqual(mo.roles, {})
+        expect(mo.roles) == {}
+        expect(mo.roles) == {}
 
     def test_bad_options_args(self):
         args = {
@@ -43,13 +45,13 @@ class TestOptions(unittest.TestCase):
             'roles': None,
             'badkw': None,
         }
-        with self.assertRaises(TypeError):
-            c = self._class(**args)
+        with expect.raises(TypeError):
+            self._class(**args)
 
     def test_no_options_args(self):
         args = {}
         mo = self._class(None, **args)
-        self.assertNotEqual(mo, None)
+        expect(mo) != None
 
     def test_options_parsing(self):
         mo = ModelOptions(None)
@@ -63,9 +65,9 @@ class TestOptions(unittest.TestCase):
         attrs = { 'Options': Options }
         oc = _parse_options_config(None, attrs, ModelOptions)
 
-        self.assertEqual(oc.__class__, mo.__class__)
-        self.assertEqual(oc.db_namespace, mo.db_namespace)
-        self.assertEqual(oc.roles, mo.roles)
+        expect(oc.__class__) == mo.__class__
+        expect(oc.db_namespace) == mo.db_namespace
+        expect(oc.roles) == mo.roles
 
     def test_options_parsing_from_model(self):
         class Foo(Model):
@@ -83,9 +85,9 @@ class TestOptions(unittest.TestCase):
         f = Foo()
         fo = f._options
         
-        self.assertEqual(oc.__class__, fo.__class__)
-        self.assertEqual(oc.db_namespace, fo.db_namespace)
-        self.assertEqual(oc.roles, fo.roles)
+        expect(oc.__class__) == fo.__class__
+        expect(oc.db_namespace) == fo.db_namespace
+        expect(oc.roles) == fo.roles
 
 
 class TestMetaclass(unittest.TestCase):
@@ -100,7 +102,7 @@ class TestMetaclass(unittest.TestCase):
         attrs = {'i': IntType()}
         
         fields = _extract_fields(bases, attrs)
-        self.assertEqual(attrs, fields)
+        expect(attrs) == fields
 
     def test_bad_extract_class_fields(self):
         bases = []
@@ -108,7 +110,7 @@ class TestMetaclass(unittest.TestCase):
         expected = {'i': IntType()}
         
         fields = _extract_fields(bases, attrs)
-        self.assertNotEqual(expected, fields)
+        expect(expected) != fields
 
     def test_extract_subclass_fields(self):
         class Foo(Model):
@@ -125,7 +127,7 @@ class TestMetaclass(unittest.TestCase):
             'x': Foo.x,
             'y': Foo.y,
         }
-        self.assertEqual(fields, expected)
+        expect(fields) == expected
 
 
 class TestModels(unittest.TestCase):
@@ -141,24 +143,25 @@ class TestModels(unittest.TestCase):
 
         tm1 = TestModel()
         tm1.some_int = 4
-        self.assertEqual(tm1, copy.copy(tm1))
+        expect(tm1) == copy.copy(tm1)
 
         tm2 = TestModel()
         tm2.some_int = 4
-        self.assertEqual(tm1, tm2)
+        expect(tm1) == tm2
 
     def test_model_field_list(self):
         it = IntType()
         class TestModel(Model):
             some_int = it
         
-        self.assertEqual({'some_int': it}, TestModel._fields)
+        expect({'some_int': it}) == TestModel._fields
 
     def test_model_data(self):
         class TestModel(Model):
             some_int = IntType()
 
-        self.assertRaises(AttributeError, lambda: TestModel._data)        
+        with expect.raises(AttributeError):
+            TestModel._data()
         
     def test_instance_data(self):
         class TestModel(Model):
@@ -167,7 +170,7 @@ class TestModels(unittest.TestCase):
         tm = TestModel()
         tm.some_int = 5
         
-        self.assertEqual({'some_int': 5}, tm._data)
+        expect({'some_int': 5}) == tm._data
 
     def test_dict_interface(self):
         class TestModel(Model):
@@ -176,8 +179,8 @@ class TestModels(unittest.TestCase):
         tm = TestModel()
         tm.some_int = 5
         
-        self.assertEqual(True, 'some_int' in tm)
-        self.assertEqual(5, tm['some_int'])
-        self.assertEqual(True, 'fake_key' not in tm)
+        expect(tm).contains('some_int')
+        expect(tm['some_int']) == 5
+        expect(tm).does_not_contain('fake_key')
         
         

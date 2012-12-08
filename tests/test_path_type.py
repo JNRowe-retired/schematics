@@ -1,3 +1,5 @@
+from expecter import expect
+
 from schematics.models import Model
 from schematics.types.path import PathType, ExecutablePathType
 from schematics.validation import validate_instance
@@ -19,7 +21,7 @@ class PathTypeTestCase(unittest.TestCase):
 
         foo.path = "/tmp/this_file_doesnt_exist_with_some_random_digits_13467487681356573"
         result = validate_instance(foo)
-        self.assertNotEqual(result.tag, 'OK')
+        expect(result.tag) != 'OK'
             
 
     def test_path_isdir(self):
@@ -31,7 +33,7 @@ class PathTypeTestCase(unittest.TestCase):
 
         foo.path = "/etc/hosts"
         result = validate_instance(foo)
-        self.assertNotEqual(result.tag, 'OK')
+        expect(result.tag) != 'OK'
 
     def test_path_isfile(self):
         class Foo(Model):
@@ -42,7 +44,7 @@ class PathTypeTestCase(unittest.TestCase):
 
         foo.path = "/tmp"
         result = validate_instance(foo)
-        self.assertNotEqual(result.tag, 'OK')
+        expect(result.tag) != 'OK'
 
     def test_path__can_create_or_write(self):
         class Foo(Model):
@@ -50,11 +52,11 @@ class PathTypeTestCase(unittest.TestCase):
 
         foo = Foo(path="/tmp/file_that_doesnt_exist_but_can_be_created")
         result = validate_instance(foo)
-        self.assertEqual(result.tag, 'OK')
+        expect(result.tag) == 'OK'
 
         foo.path = "/tmp/dir_that_doesnt_exist/file_that_doesnt_exist"
         result = validate_instance(foo)
-        self.assertNotEqual(result.tag, 'OK')
+        expect(result.tag) != 'OK'
 
 class ExecutablePathTestCase(unittest.TestCase):
     def setUp(self):
@@ -68,8 +70,8 @@ class ExecutablePathTestCase(unittest.TestCase):
 
         foo = Foo(path="/bin/sh")
         result = validate_instance(foo)
-        self.assertEqual(result.tag, 'OK')
+        expect(result.tag) == 'OK'
 
         foo.path = "/bin/file_that_doesnt_exist"
         result = validate_instance(foo)
-        self.assertNotEqual(result.tag, 'OK')
+        expect(result.tag) != 'OK'

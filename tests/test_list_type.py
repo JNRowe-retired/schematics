@@ -4,6 +4,8 @@ import copy
 import unittest
 import json
 
+from expecter import expect
+
 from schematics.models import Model
 from schematics.types import  IntType, StringType
 from schematics.types.compound import SortedListType, ModelType, ListType
@@ -28,67 +30,67 @@ class TestSetGetSingleScalarData(unittest.TestCase):
 
     def test_good_value_for_python(self):
         self.testmodel.the_list = [2]
-        self.assertEqual(self.testmodel.the_list, [2])
+        expect(self.testmodel.the_list) == [2]
 
     def test_single_bad_value_for_python(self):
         self.testmodel.the_list = 2
         # since no validation happens, nothing should yell at us        
-        self.assertEqual(self.testmodel.the_list, 2) 
+        expect(self.testmodel.the_list) == 2
 
     def test_collection_good_values_for_python(self):
         self.testmodel.the_list = [2,2,2,2,2,2]
-        self.assertEqual(self.testmodel.the_list, [2,2,2,2,2,2])
+        expect(self.testmodel.the_list) == [2,2,2,2,2,2]
 
     def test_collection_bad_values_for_python(self):
         expected = self.testmodel.the_list = ["2","2","2","2","2","2"]
         actual = self.testmodel.the_list
         # since no validation happens, nothing should yell at us        
-        self.assertEqual(actual, expected)  
+        expect(actual) == expected
 
     def test_good_value_for_json(self):
         expected = self.testmodel.the_list = [2]
         actual = self.listtype.for_json(self.testmodel.the_list)
-        self.assertEqual(actual, expected)
+        expect(actual) == expected
 
     def test_good_values_for_json(self):
         expected = self.testmodel.the_list = [2,2,2,2,2,2]
         actual = self.listtype.for_json(self.testmodel.the_list)
-        self.assertEqual(actual, expected)
+        expect(actual) == expected
 
     def test_good_values_into_json(self):
         self.testmodel.the_list = [2,2,2,2,2,2]
         actual = make_safe_json(self.Testmodel, self.testmodel, 'owner')
         expected = json.dumps({"the_list":[2,2,2,2,2,2]})
-        self.assertEqual(actual, expected)
+        expect(actual) == expected
 
     def test_good_value_into_json(self):
         self.testmodel.the_list = [2]
         actual = make_safe_json(self.Testmodel, self.testmodel, 'owner')
         expected = json.dumps({"the_list":[2]})
-        self.assertEqual(actual, expected)
+        expect(actual) == expected
 
     def test_good_value_validates(self):
         self.testmodel.the_list = [2,2,2,2,2,2]
         result = validate_instance(self.testmodel)
-        self.assertEqual(result.tag, 'OK')
+        expect(result.tag) == 'OK'
 
     def test_coerceible_value_passes_validation(self):
         self.testmodel.the_list = ["2","2","2","2","2","2"]
         result = validate_instance(self.testmodel)
-        self.assertEqual(result.tag, 'OK')
+        expect(result.tag) == 'OK'
 
     def test_uncoerceible_value_passes_validation(self):
         self.testmodel.the_list = ["2","2","2","2","horse","2"]
         result = validate_instance(self.testmodel)
-        self.assertNotEqual(result.tag, 'OK')
+        expect(result.tag) != 'OK'
         
     def test_validation_converts_value(self):
         self.testmodel.the_list = ["2","2","2","2","2","2"]
         result = validate_instance(self.testmodel)
-        self.assertEqual(result.tag, 'OK')
+        expect(result.tag) == 'OK'
         converted_data = result.value
         new_list = converted_data['the_list']
-        self.assertEqual(new_list, [2,2,2,2,2,2])
+        expect(new_list) == [2,2,2,2,2,2]
 
         
 class TestGetSingleEmbeddedData(unittest.TestCase):
@@ -110,7 +112,7 @@ class TestGetSingleEmbeddedData(unittest.TestCase):
         from_testmodel = self.testmodel.the_list[0]
         new_embedded_test = self.embedded_test_model()
         new_embedded_test['bandname'] = 'fugazi'
-        self.assertEqual(from_testmodel, new_embedded_test)
+        expect(from_testmodel) == new_embedded_test
 
 
 class TestMultipleEmbeddedData(unittest.TestCase):
@@ -142,7 +144,7 @@ class TestMultipleEmbeddedData(unittest.TestCase):
         embedded_test_two = self.second_embedded_test_document()
         embedded_test_two['food'] = 'cake'
         expected = [embedded_test_one, embedded_test_two]
-        self.assertEqual(actual, expected)
+        expect(actual) == expected
         
 
 class TestSetGetSingleScalarDataSorted(unittest.TestCase):
@@ -157,11 +159,11 @@ class TestSetGetSingleScalarDataSorted(unittest.TestCase):
 
     def test_collection_good_values_for_python(self):
         expected = self.testmodel.the_list = [1,2,3,4,5,6]
-        self.assertEqual(self.testmodel.the_list, expected)
+        expect(self.testmodel.the_list) == expected
 
     def test_collection_good_values_for_python_gets_sorted(self):
         expected = self.testmodel.the_list = [6,5,4,3,2,1]
         expected = copy.copy(expected)
         expected.reverse()
         actual = to_python(self.testmodel)['the_list']
-        self.assertEqual(actual, expected)
+        expect(actual) == expected

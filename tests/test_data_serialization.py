@@ -6,6 +6,8 @@ import json
 import datetime
 import copy
 
+from expecter import expect
+
 from schematics.models import Model
 from schematics.serialize import (to_python, to_json, make_safe_python,
                                   make_safe_json)
@@ -29,29 +31,28 @@ class ModelSerializer:
         self.json_public_safe = json.dumps(self.public_safe, sort_keys=True)
 
     def test_instance_to_python(self):
-        self.assertEquals(self.as_python, self.description)
+        expect(self.as_python) == self.description
 
     def test_instance_to_json(self):
-        self.assertEquals(self.as_json, json.dumps(self.description,
-                                                   sort_keys=True))
+        expect(self.as_json) == json.dumps(self.description, sort_keys=True)
 
     def test_owner_safe(self):
         owner_safe = make_safe_python(self.klass, self.instance, 'owner')
-        self.assertEqual(self.owner_safe, owner_safe)
+        expect(self.owner_safe) == owner_safe
 
     def test_json_owner_safe(self):
         json_owner_safe = make_safe_json(self.klass, self.instance, 'owner',
                                          sort_keys=True)
-        self.assertEqual(self.json_owner_safe, json_owner_safe)
+        expect(self.json_owner_safe) == json_owner_safe
 
     def test_public_safe(self):
         public_safe = make_safe_python(self.klass, self.instance, 'public')
-        self.assertEqual(self.public_safe, public_safe)
+        expect(self.public_safe) == public_safe
 
     def test_json_public_safe(self):
         json_public_safe = make_safe_json(self.klass, self.instance, 'public',
                                           sort_keys=True)
-        self.assertEqual(self.json_public_safe, json_public_safe)
+        expect(self.json_public_safe) == json_public_safe
 
 
 class TestSimpleModel(ModelSerializer, unittest.TestCase):
