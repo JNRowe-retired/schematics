@@ -1,7 +1,7 @@
 try:
     from itertools import filterfalse  # python3 wutwut
 except:
-    from itertools import ifilterfalse
+    from itertools import ifilterfalse as filterfalse
 from operator import itemgetter
 
 from schematics.py3_compat import basestring
@@ -41,14 +41,14 @@ class ListType(BaseType):
             return FieldResult(ERROR_FIELD_CONFIG, error_msg,
                                self.field_name, fields)
         # some bad stuff in the list
-        elif list(ifilterfalse(is_basetype, fields)):
+        elif list(filterfalse(is_basetype, fields)):
             error_msg = 'Argument to ListType constructor must be '
             error_msg = error_msg + 'a valid field or list of valid fields'
             return FieldResult(ERROR_FIELD_TYPE_CHECK, error_msg,
                                self.field_name, fields)
         else:
-            models = filter(is_model, fields)
-            dicts = filter(is_dicttype, fields)
+            models = list(filter(is_model, fields))
+            dicts = list(filter(is_dicttype, fields))
             if dicts:
                 kwargs.setdefault('primary_embedded', None)
             if models:
@@ -66,7 +66,7 @@ class ListType(BaseType):
         new_value = value_list
 
         is_model = lambda tipe: isinstance(tipe, ModelType)
-        model_fields = filter(is_model, self.fields)
+        model_fields = list(filter(is_model, self.fields))
         
         if self.primary_embedded:
             model_fields.remove(self.primary_embedded)
