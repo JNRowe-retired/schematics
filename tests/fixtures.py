@@ -215,7 +215,7 @@ class BasicUser(Model):
         }
         
     def set_password(self, plaintext):
-        hash_string = hashlib.md5(plaintext).hexdigest()
+        hash_string = hashlib.md5(plaintext.encode()).hexdigest()
         self.secret = hash_string
 
 
