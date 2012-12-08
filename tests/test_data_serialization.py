@@ -10,8 +10,8 @@ from schematics.models import Model
 from schematics.serialize import (to_python, to_json, make_safe_python,
                                   make_safe_json)
 
-import fixtures
-from fixtures import Model
+from tests import fixtures
+from tests.fixtures import Model
 
 
 class ModelSerializer:
