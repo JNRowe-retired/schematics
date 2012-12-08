@@ -32,6 +32,7 @@ value. This value will always be log-friendly.
 
 from collections import namedtuple
 
+from schematics.py3_compat import basestring
 
 ###
 ### Result Handlilng
@@ -67,7 +68,7 @@ def _is_empty(field_value):
     if field_value is None:
         return True
     # treat empty strings as empty values and skip
-    if isinstance(field_value, (str, unicode)) and \
+    if isinstance(field_value, basestring) and \
            len(field_value.strip()) == 0:
         return True
     return False

@@ -2,6 +2,7 @@ import inspect
 import copy
 
 
+from schematics.py3_compat import (basestring, unicode)
 #from schematics.base import (TypeException, ModelException, json)
 from schematics.base import json
 from schematics.types import (DictFieldNotFound, schematic_types, BaseType,

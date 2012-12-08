@@ -4,6 +4,7 @@ except:
     from itertools import ifilterfalse
 from operator import itemgetter
 
+from schematics.py3_compat import basestring
 from schematics.models import Model
 from schematics.types import BaseType, DictType
 from schematics.datastructures import MultiValueDict

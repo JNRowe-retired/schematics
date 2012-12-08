@@ -1,6 +1,7 @@
 import os
 from os import path
 
+from schematics.py3_compat import basestring
 from schematics.types import StringType
 from schematics.validation import (TypeResult, FieldResult, OK,
                                    ERROR_TYPE_COERCION)

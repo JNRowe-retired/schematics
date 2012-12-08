@@ -4,6 +4,7 @@ import datetime
 import decimal
 
 
+from schematics.py3_compat import (basestring, unicode)
 from schematics.validation import (TypeResult, FieldResult,
                                    OK, ERROR_TYPE_COERCION, ERROR_FIELD_CONFIG,
                                    ERROR_FIELD_BAD_CHOICE,
@@ -234,7 +235,7 @@ class StringType(BaseType):
         return unicode(value)
 
     def validate(self, value):
-        assert isinstance(value, (str, unicode))
+        assert isinstance(value, basestring)
 
         if self.max_length is not None and len(value) > self.max_length:
             error_msg = 'String value is too long'
@@ -568,7 +569,7 @@ class BooleanType(BaseType):
         """
         Accept some form of True/False as string
         """
-        if isinstance(value, (str, unicode)):
+        if isinstance(value, basestring):
             if value in BooleanType.TRUE:
                 value = True
             elif value in BooleanType.FALSE:
@@ -625,7 +626,7 @@ class DateTimeType(BaseType):
 
         A datetime may be used (and is encouraged).
         """
-        if isinstance(value, (str, unicode)):
+        if isinstance(value, basestring):
             result = DateTimeType.iso8601_to_date(value)
             value = result.value
 
