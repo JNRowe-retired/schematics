@@ -43,8 +43,7 @@ class TestOptions(unittest.TestCase):
             'roles': None,
             'badkw': None,
         }
-        with self.assertRaises(TypeError):
-            c = self._class(**args)
+        self.assertRaises(TypeError, self._class, **args)
 
     def test_no_options_args(self):
         args = {}
